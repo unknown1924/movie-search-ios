@@ -32,6 +32,10 @@ struct MovieViewModel {
         movie.imdbID
     }
     
+    var year: String {
+        movie.year
+    }
+    
     var title: String {
         movie.title
     }

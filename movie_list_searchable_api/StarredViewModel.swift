@@ -11,54 +11,60 @@ struct StarredViewModel: View {
     
     @Environment(\.managedObjectContext) private var managedObjectContext
     
-    //    @FetchRequest(entity: Company.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Company.name, ascending: true)]) var companies: FetchedResults<Company>
-    
-    @FetchRequest(sortDescriptors: []) var companies: FetchedResults<Company>
+    @FetchRequest(sortDescriptors: []) var companies: FetchedResults<MovieData>
     
     var body: some View {
-//        NavigationView {
+        NavigationView {
             VStack {
                 HStack {
-                    Button ("Add") {
-                        let temp = Company(context: managedObjectContext)
-                        temp.title = "Iron Man"
-                        temp.imdbID = "tt0371746"
-                        PersistenceController.shared.saveContext()
-                    }
-                    Button ("Clear") { companies.forEach(managedObjectContext.delete)}
-                    Print("COUNT: \(companies.count)")
+                    
+                    Button(action: {
+                        withAnimation {
+                            let temp = MovieData(context: managedObjectContext)
+                            temp.title = "Iron Man"
+                            temp.imdbID = "tt0371746"
+                            PersistenceController.shared.saveContext()
+                        }
+                    }, label: {
+                        Label("", systemImage: "plus.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.green)
+                    })
+                    
+                    Button(action: {
+                        companies.forEach(managedObjectContext.delete)
+                    }, label: {
+                        Label("", systemImage: "xmark.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.red)
+                    })
+                    
                 }
                 List {
                     ForEach(companies, id: \.self) { company in
                         
-                        if company.title != "" {
-                            NavigationLink(destination: MovieDetailsViewModel(starred: true, searchID: company.imdbID ?? "")) {
-                                HStack {
-                                    AsyncImage(url: URL(string: company.poster ?? "https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_SX300.jpg")
-                                               , content: { image in
-                                        image.resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(maxWidth: 50)
-                                    }, placeholder: {
-                                        ProgressView()
-                                    })
-
-                                    Text(company.title ?? "")
-                                    Text(company.imdbID ?? "")
-//                                    Print(company.title ?? "")
-//                                    Print(company.imdbID ?? "")\
-                                    
-                                }
-                                .padding()
+                        NavigationLink(destination: MovieDetailsViewModel(starred: true, searchID: company.imdbID ?? "")) {
+                            HStack {
+                                AsyncImage(url: URL(string: company.poster ?? "https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_SX300.jpg")
+                                           , content: { image in
+                                    image.resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(maxWidth: 100)
+                                        .cornerRadius(10)
+                                }, placeholder: {
+                                    ProgressView()
+                                })
+                                
+                                Text(" \(company.title ?? "")")
+                                    .bold()
                             }
                         }
-
                     }
                     .onDelete(perform: deleteMovie)
                 }
             }
-            .navigationTitle("Starred")
-//        }
+            .navigationTitle("Favourites")
+        }
     }
     
     

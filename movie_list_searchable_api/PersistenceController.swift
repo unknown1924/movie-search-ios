@@ -22,7 +22,7 @@ struct PersistenceController {
         let viewContext = result.container.viewContext
 
         // Companies
-        let newCompany = Company(context: viewContext)
+        let newCompany = MovieData(context: viewContext)
         newCompany.name = "Appe"
         newCompany.imdbID = "tt0371746"
         newCompany.title = "Iron Man"
@@ -34,7 +34,7 @@ struct PersistenceController {
     }()
     
     init() {
-        container = NSPersistentContainer(name: "Intro")
+        container = NSPersistentContainer(name: "MovieDb")
         
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
@@ -62,15 +62,4 @@ struct PersistenceController {
         context.delete(object)
         saveContext(completion: completion)
     }
-//    func saveContext() {
-//        let context = container.viewContext
-//
-//        if context.hasChanges {
-//            do {
-//                try context.save()
-//            } catch {
-//                fatalError("Error: \(error.localizedDescription)")
-//            }
-//        }
-//    }
 }
